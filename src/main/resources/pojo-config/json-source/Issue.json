@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://api.github.com/repos/italia/anpr/issues/238",
+    "repository_url": "https://api.github.com/repos/italia/anpr",
+    "labels_url": "https://api.github.com/repos/italia/anpr/issues/238/labels{/name}",
+    "comments_url": "https://api.github.com/repos/italia/anpr/issues/238/comments",
+    "events_url": "https://api.github.com/repos/italia/anpr/issues/238/events",
+    "html_url": "https://github.com/italia/anpr/issues/238",
+    "id": 243399707,
+    "number": 238,
+    "title": "[7001] ws - download tabelle decodifica",
+    "user": {
+      "login": "siscomanpr",
+      "id": 28776141,
+      "avatar_url": "https://avatars3.githubusercontent.com/u/28776141?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/siscomanpr",
+      "html_url": "https://github.com/siscomanpr",
+      "followers_url": "https://api.github.com/users/siscomanpr/followers",
+      "following_url": "https://api.github.com/users/siscomanpr/following{/other_user}",
+      "gists_url": "https://api.github.com/users/siscomanpr/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/siscomanpr/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/siscomanpr/subscriptions",
+      "organizations_url": "https://api.github.com/users/siscomanpr/orgs",
+      "repos_url": "https://api.github.com/users/siscomanpr/repos",
+      "events_url": "https://api.github.com/users/siscomanpr/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/siscomanpr/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "labels": [
+
+    ],
+    "state": "open",
+    "locked": false,
+    "assignee": null,
+    "assignees": [
+
+    ],
+    "milestone": null,
+    "comments": 1,
+    "created_at": "2017-07-17T13:42:55Z",
+    "updated_at": "2017-07-17T15:03:35Z",
+    "closed_at": null,
+    "body": "Comune di Serravalle Sesia\r\nAmbiente di Produzione\r\n\r\nDa alcuni giorni il comune di Serravalle Sesia non riesce ad effettuare il download delle tabelle di decodifica causa un errore \"Internal Error\". \r\nChiamando lo stesso servizio da ambiente di test di altri comuni, le tabelle vengono scaricate regolarmente.\r\nAllego la richiesta e la risposta:\r\n[serravalle.zip](https://github.com/italia/anpr/files/1152779/serravalle.zip)\r\n"
+  },
+  {
+    "url": "https://api.github.com/repos/italia/anpr/issues/237",
+    "repository_url": "https://api.github.com/repos/italia/anpr",
+    "labels_url": "https://api.github.com/repos/italia/anpr/issues/237/labels{/name}",
+    "comments_url": "https://api.github.com/repos/italia/anpr/issues/237/comments",
+    "events_url": "https://api.github.com/repos/italia/anpr/issues/237/events",
+    "html_url": "https://github.com/italia/anpr/issues/237",
+    "id": 243335266,
+    "number": 237,
+    "title": "Attribuzione C.F. neonato in ufficio A.E.",
+    "user": {
+      "login": "bfilipazzi",
+      "id": 26787808,
+      "avatar_url": "https://avatars2.githubusercontent.com/u/26787808?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/bfilipazzi",
+      "html_url": "https://github.com/bfilipazzi",
+      "followers_url": "https://api.github.com/users/bfilipazzi/followers",
+      "following_url": "https://api.github.com/users/bfilipazzi/following{/other_user}",
+      "gists_url": "https://api.github.com/users/bfilipazzi/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/bfilipazzi/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/bfilipazzi/subscriptions",
+      "organizations_url": "https://api.github.com/users/bfilipazzi/orgs",
+      "repos_url": "https://api.github.com/users/bfilipazzi/repos",
+      "events_url": "https://api.github.com/users/bfilipazzi/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/bfilipazzi/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "labels": [
+
+    ],
+    "state": "open",
+    "locked": false,
+    "assignee": null,
+    "assignees": [
+
+    ],
+    "milestone": null,
+    "comments": 4,
+    "created_at": "2017-07-17T09:13:31Z",
+    "updated_at": "2017-07-17T09:46:21Z",
+    "closed_at": null,
+    "body": "Riferimento: idO."
+  }
+]

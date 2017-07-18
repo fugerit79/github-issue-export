@@ -1,0 +1,240 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.fugerit.java</groupId>
+	<artifactId>github-issue-export</artifactId>
+
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>github-issue-export</name>
+	<description>Github Issue Export Tool</description>
+	<url>http://www.fugerit.org/java/</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Matteo a.k.a. Fugerit</name>
+			<email>m@fugerit.org</email>
+			<organization>Fugerit</organization>
+			<organizationUrl>http://www.fugerit.org</organizationUrl>
+		</developer>
+		<developer>
+			<name>Daneel</name>
+			<email>d@fugerit.org</email>
+			<organization>Fugerit</organization>
+			<organizationUrl>http://www.fugerit.org</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/fugerit79/github-issue-export.git</connection>
+		<developerConnection>scm:git:ssh://github.com/fugerit79/github-issue-export.git</developerConnection>
+		<url>http://github.com/fugerit79/github-issue-export/tree/master</url>
+	</scm>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+		<dependencies>
+
+		<!-- java core dependancies -->
+			<dependency>
+				<groupId>maven</groupId>
+				<artifactId>maven-java-plugin</artifactId>
+				<version>1.6</version>
+			</dependency>
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>6.0</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- logging -->
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.17</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.6.4</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>1.6.4</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.6.4</version>
+				<scope>runtime</scope>
+			</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		    <version>3.16</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+			<dependency>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-lang3</artifactId>
+			    <version>3.5</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>commons-dbcp</groupId>
+			    <artifactId>commons-dbcp</artifactId>
+			    <version>1.4</version>
+			</dependency>			
+
+			<!-- for testing -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.10</version>
+			</dependency>
+
+		<dependency>
+		  <groupId>org.fugerit.java</groupId>
+		  <artifactId>fj-core</artifactId>
+		  <version>0.1.6</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.8.8</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.8.8</version>
+		</dependency>
+
+		</dependencies>
+
+	<build>
+
+	</build>
+
+	<profiles>
+
+		<profile>
+			<id>singlepackage</id>
+			<build>
+				<plugins>
+					<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-jar-plugin</artifactId>
+								<configuration>
+									<archive>
+										<manifest>
+											<addClasspath>true</addClasspath>
+											<mainClass>org.fugerit.java.github.issue.export.GithubIssueExport</mainClass>
+										</manifest>
+									</archive>
+								</configuration>
+							</plugin>				
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<finalName>dist-${artifactId}-${version}</finalName>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>jsonschema2pojo</id>
+			<build>
+				<plugins>
+					<plugin>
+						<!-- Genera gli oggetti di modello java per degli oggetti JSON : http://www.jsonschema2pojo.org/ 
+							https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started -->
+						<groupId>org.jsonschema2pojo</groupId>
+						<artifactId>jsonschema2pojo-maven-plugin</artifactId>
+						<version>0.4.33</version>
+						<configuration>
+							<sourceType>json</sourceType>
+							<sourceDirectory>${basedir}/src/main/resources/pojo-config/json-source</sourceDirectory>
+							<targetPackage>org.fugerit.java.github.issue.export.model</targetPackage>
+							<!-- <sourceDirectory>${basedir}/src/main/resources/schema</sourceDirectory> 
+								<targetPackage>it.sogei.anpr.subentro.bpm.client.pojo</targetPackage> -->
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
+	<reporting>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-changelog-plugin</artifactId>
+	        <version>2.3</version>
+	      </plugin>
+	    </plugins>
+	  </reporting>
+
+	<organization>
+		<url>http://www.fugerit.org</url>
+		<name>Fugerit</name>
+	</organization>
+		
+</project>
