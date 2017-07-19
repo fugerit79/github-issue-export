@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.fugerit.java.core.cli.ArgUtils;
+import org.fugerit.java.github.issue.export.helper.FormatHelper;
 import org.fugerit.java.github.issue.export.helper.PoiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +87,7 @@ public class GithubIssueExport {
 	
 	private static void handle( Properties params ) throws Exception {
 		List<List<String>> lines = new ArrayList<List<String>>();
+		String lang = params.getProperty( ARG_LANG, "en" );
 		// data read
 		String data = readData(params);
 		List<Map> issueList = parseJsonData( data );
@@ -124,7 +126,7 @@ public class GithubIssueExport {
 					Map currentEvent = eventsIt.next();
 					String eventType = String.valueOf( currentEvent.get( "event" ) );
 					if ( eventType.equalsIgnoreCase( "assigned" ) ) {
-						assignDate = String.valueOf( currentEvent.get( "created_at" ) );
+						assignDate = FormatHelper.formatDate( currentEvent.get( "created_at" ), lang );
 					}
 				}
 				currentLine.add( assignDate );
@@ -134,9 +136,9 @@ public class GithubIssueExport {
 			}
 			Map user = (Map)issue.get( "user" );
 			currentLine.add( String.valueOf( user.get( "login" ) ) );
-			currentLine.add( String.valueOf( issue.get( "created_at" ) ) );
-			currentLine.add( String.valueOf( issue.get( "updated_at" ) ) );
-			currentLine.add( String.valueOf( issue.get( "closed_at" ) ) );
+			currentLine.add( FormatHelper.formatDate( issue.get( "created_at" ), lang ) );
+			currentLine.add( FormatHelper.formatDate( issue.get( "updated_at" ), lang ) );
+			currentLine.add( FormatHelper.formatDate( issue.get( "closed_at" ), lang ) );
 			currentLine.add( String.valueOf( issue.get( "comments" ) ) );
 			currentLine.add( String.valueOf( issue.get( "html_url" ) ) );
 			currentLine.add( String.valueOf( issue.get( "body" ) ) );
