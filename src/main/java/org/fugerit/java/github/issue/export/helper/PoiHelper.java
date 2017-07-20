@@ -13,7 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 /**
  * Helper class for generating XLS spreadsheet
  * 
- * @author Daneel <d@fugerit.org>
+ * @author Daneel, &lt;d@fugerit.org&gt;
  *
  */
 public class PoiHelper {

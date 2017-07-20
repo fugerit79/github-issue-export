@@ -3,6 +3,11 @@ package org.fugerit.java.github.issue.export.helper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 
+ * @author Daneel, &lt;d@fugerit.org&gt;
+ *
+ */
 public class FormatHelper {
 
 	private final static String DF = "dd/MM/yyyy HH:mm";

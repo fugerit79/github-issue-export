@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * --help		print help usage
  * 
- * @author Daneel <d@fugerit.org>
+ * @author Daneel, &lt;d@fugerit.org&gt;
  *
  */
 public class GithubIssueExport {
