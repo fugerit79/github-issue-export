@@ -13,3 +13,7 @@ mvn clean install -P singlepackage
 
 ### Run
 java -jar target/dist-github-issue-export-0.1.0-SNAPSHOT.jar --owner fugerit79 --repo github-issue-export --lang it --xls-file target/report.xls
+
+
+## TODO
+Option to select the field to export in spreadsheet format
