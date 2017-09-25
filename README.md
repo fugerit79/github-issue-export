@@ -1,4 +1,4 @@
-# github-issue-export (0.1.0 - 2017-07-18)
+# github-issue-export (0.2.0 - 2017-07-18)
 
 Simple propject to export github issues to a xls spreadsheet.
 

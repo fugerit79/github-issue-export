@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,6 +18,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -59,6 +64,14 @@ public class GithubIssueExport {
 	
 	public static final String ARG_LANG = "lang";
 	
+	public static final String ARG_PROXY_HOST = "proxy_host";
+	
+	public static final String ARG_PROXY_PORT = "proxy_port";
+	
+	public static final String ARG_PROXY_USER = "proxy_user";
+	
+	public static final String ARG_PROXY_PASS = "proxy_pass";
+	
 	private final static String HEADER[] = {
 			"#", "Title", "State", "Labels", "Assigned", "Assigned on", "Created by", "Creation", "Update", "Closed", "# Comments", "URL", "Body" 
 	};
@@ -85,7 +98,7 @@ public class GithubIssueExport {
 		return issueList;
 	}
 	
-	private static void handle( Properties params ) throws Exception {
+	protected static void handle( Properties params ) throws Exception {
 		List<List<String>> lines = new ArrayList<List<String>>();
 		String lang = params.getProperty( ARG_LANG, "en" );
 		// data read
@@ -118,7 +131,7 @@ public class GithubIssueExport {
 			if ( assignee != null ) {
 				currentLine.add( String.valueOf( assignee.get( "login" ) ) );
 				String eventUrl = String.valueOf( issue.get( "events_url" ) );
-				String eventsData = readUrlData( eventUrl );
+				String eventsData = readUrlData( eventUrl, params );
 				List<Map> eventsList = parseJsonData( eventsData );
 				Iterator<Map> eventsIt = eventsList.iterator();
 				String assignDate = null;
@@ -147,9 +160,30 @@ public class GithubIssueExport {
 		handleExcel(params, lines);
 	}
 
-	private static String readUrlData( String url ) throws Exception {
-		URL u = new URL( url );
-		HttpURLConnection conn = (HttpURLConnection)u.openConnection();
+	private static String readUrlData( String url, Properties params ) throws Exception {
+		final String proxyHost = params.getProperty( ARG_PROXY_HOST );
+		final String proxyPort = params.getProperty( ARG_PROXY_PORT );
+		final String proxyUser = params.getProperty( ARG_PROXY_USER );
+		final String proxyPass = params.getProperty( ARG_PROXY_PASS );
+		HttpURLConnection conn;
+		if ( !StringUtils.isEmpty( proxyHost ) && !StringUtils.isEmpty( proxyPort ) ) {
+			logger.info( "using proxy : "+proxyHost+":"+proxyPort+" (user:"+proxyUser+")" );
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt( proxyPort )));
+			if ( !StringUtils.isEmpty( proxyUser ) && !StringUtils.isEmpty( proxyPass ) ) {
+				Authenticator authenticator = new Authenticator() {
+			        public PasswordAuthentication getPasswordAuthentication() {
+			            return (new PasswordAuthentication( proxyUser, proxyPass.toCharArray() ) );
+			        }
+			    };
+			    Authenticator.setDefault(authenticator);
+			}
+			URL u = new URL( url );
+			conn = (HttpURLConnection)u.openConnection( proxy );
+		} else {
+			URL u = new URL( url );
+			conn = (HttpURLConnection)u.openConnection();
+		}
+		
 		StringBuffer buffer = new StringBuffer();
 		if ( conn.getResponseCode() != 200 ) {
 			throw new Exception( "HTTP exit code : "+conn.getResponseCode() );
@@ -170,7 +204,7 @@ public class GithubIssueExport {
 		String repo = params.getProperty( ARG_REPO );
 		String owner = params.getProperty( ARG_OWNER );
 		String url = "https://api.github.com/repos/"+owner+"/"+repo+"/issues?page=1&per_page=1000";
-		return readUrlData( url );
+		return readUrlData( url, params );
 	}
 	
 	public static Object buildModel( String data, Class c ) throws Exception {

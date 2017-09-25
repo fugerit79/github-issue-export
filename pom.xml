@@ -5,12 +5,18 @@
 	<groupId>org.fugerit.java</groupId>
 	<artifactId>github-issue-export</artifactId>
 
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>github-issue-export</name>
 	<description>Github Issue Export Tool</description>
 	<url>http://www.fugerit.org/java/</url>
+
+	<scm>
+		<connection>scm:git:git://github.com/fugerit79/github-issue-export.git</connection>
+		<developerConnection>scm:git:ssh://github.com/fugerit79/github-issue-export.git</developerConnection>
+		<url>http://github.com/fugerit79/github-issue-export/tree/master</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,11 +45,7 @@
 		</developer>
 	</developers>
 
-	<scm>
-		<connection>scm:git:git://github.com/fugerit79/github-issue-export.git</connection>
-		<developerConnection>scm:git:ssh://github.com/fugerit79/github-issue-export.git</developerConnection>
-		<url>http://github.com/fugerit79/github-issue-export/tree/master</url>
-	</scm>
+
 
 	<distributionManagement>
 		<snapshotRepository>
@@ -204,7 +206,7 @@
 									<archive>
 										<manifest>
 											<addClasspath>true</addClasspath>
-											<mainClass>org.fugerit.java.github.issue.export.GithubIssueExport</mainClass>
+											<mainClass>org.fugerit.java.github.issue.export.GithubIssueExportMain</mainClass>
 										</manifest>
 									</archive>
 								</configuration>
