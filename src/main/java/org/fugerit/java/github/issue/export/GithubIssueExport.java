@@ -87,6 +87,7 @@ public class GithubIssueExport {
 		HEADER_MAP.put( "default" , HEADER );
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static List<Map> parseJsonData( String data ) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonFactory factory = mapper.getFactory();
@@ -98,6 +99,7 @@ public class GithubIssueExport {
 		return issueList;
 	}
 	
+	@SuppressWarnings({ "rawtypes" })
 	protected static void handle( Properties params ) throws Exception {
 		List<List<String>> lines = new ArrayList<List<String>>();
 		String lang = params.getProperty( ARG_LANG, "en" );
@@ -107,7 +109,6 @@ public class GithubIssueExport {
 		Iterator<Map> issueIt = issueList.iterator();
 		while ( issueIt.hasNext() ) {
 			Map issue = issueIt.next();
-			Set<Object> keys = issue.keySet();
 			List<String> currentLine = new ArrayList<String>();
 			currentLine.add( String.valueOf( issue.get( "number" ) ) );
 			currentLine.add( String.valueOf( issue.get( "title" ) ) );
@@ -207,6 +208,7 @@ public class GithubIssueExport {
 		return readUrlData( url, params );
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object buildModel( String data, Class c ) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		// jackson 1.9 and before
