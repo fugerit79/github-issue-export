@@ -1,19 +1,22 @@
-# github-issue-export (0.2.0 - 2017-07-18)
+# github-issue-export (0.2.0 - 2017-09-25)
 
 Simple propject to export github issues to a xls spreadsheet.
 
 ## Quickstart
 
-### Clone (use master or develop branch)
+### Clone (use master or develop branch for latest snapshot, release/x.x.x branch for stable versions)
 git clone https://github.com/fugerit79/github-issue-export.git
 
 ### Build
 From base dir : 
 mvn clean install -P singlepackage
 
-### Run
-java -jar target/dist-github-issue-export-0.1.0-SNAPSHOT.jar --owner fugerit79 --repo github-issue-export --lang it --xls-file target/report.xls
+### Run with a simple gui
+java -jar target/dist-github-issue-export-0.2.0-SNAPSHOT.jar
+
+### Run on command line
+java -jar target/dist-github-issue-export-0.2.0-SNAPSHOT.jar --gui 0 --owner fugerit79 --repo github-issue-export --lang it --xls-file target/report.xls
 
 
-## TODO
-Option to select the field to export in spreadsheet format
+## CHANGELOG
+[https://github.com/fugerit79/github-issue-export/blob/master/CHANGE_LOG.md](https://github.com/fugerit79/github-issue-export/blob/master/CHANGE_LOG.md)
