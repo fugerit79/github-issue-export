@@ -65,8 +65,10 @@ public class GithubIssueExport {
 	public static final String ARG_HELP = "help";
 	
 	public static final String ARG_REPO = "repo";
-	
 	public static final String ARG_OWNER = "owner";
+	
+	public static final String ARG_GITHUB_USER = "github_user";
+	public static final String ARG_GITHUB_PASS = "github_pass";
 	
 	public static final String ARG_XLSFILE = "xls-file";
 	
@@ -189,7 +191,12 @@ public class GithubIssueExport {
 		final String proxyPort = params.getProperty( ARG_PROXY_PORT );
 		final String proxyUser = params.getProperty( ARG_PROXY_USER );
 		final String proxyPass = params.getProperty( ARG_PROXY_PASS );
-		logger.info( "connecting to url : "+url );
+		String githubUser = params.getProperty( ARG_GITHUB_USER );
+		String githubPass = params.getProperty( ARG_GITHUB_PASS );
+		logger.info( "connecting to url : "+url+" (user:"+githubUser+")" );
+		if ( StringUtils.isNotEmpty( githubUser ) && StringUtils.isNotEmpty( githubPass ) ) {
+			url = url.replace( "api.github.com" , githubUser+":"+githubPass+"@api.github.com" );
+		}
 		HttpURLConnection conn;
 		if ( !StringUtils.isEmpty( proxyHost ) && !StringUtils.isEmpty( proxyPort ) ) {
 			logger.debug( "using proxy : "+proxyHost+":"+proxyPort+" (user:"+proxyUser+")" );

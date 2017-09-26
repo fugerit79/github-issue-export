@@ -49,9 +49,9 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 	
 	private JTextField inputProxyHost, inputProxyPort, inputProxyUser;
 	
-	private JPasswordField inputProxyPass;
+	private JPasswordField inputProxyPass, inputRepoPass;
 	
-	private JTextField inputRepoName, inputRepoOwner, inputXlsPath, inputLocale;
+	private JTextField inputRepoName, inputRepoOwner, inputRepoUser, inputXlsPath, inputLocale;
 	
 	private JComboBox<String> inputStateCombo;
 	
@@ -90,13 +90,29 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		c.setForeground( new Color( 0, 0, 80 ) );
 	}
 	
-	public GithubIssueGUI( Properties params ) {
-		super( "GITHUB ISSUE EXPORT GUI" );
-		
+	private static void addRow( Component c1 , JPanel parent ) {
+		configureLayout( c1 );
+		parent.add( c1 );
+	}
+	
+	private static JPanel newRowPanel( Component c1, Component c2, JPanel parent ) {
+		JPanel panel = new JPanel( new GridLayout( 1, 2 ) );
+		configureLayout( c1 );
+		configureLayout( c2 );
+		configureLayout( panel );
+		panel.add( c1 );
+		panel.add( c2 );
+		parent.add( panel );
+		return panel;
+	}
+	
+	/*
+	 * Configuration init method
+	 */
+	private void initConf() {
 		this.config = new Properties();
-		
+		// handle config file
 		this.configSavePath = new File( System.getProperty( "user.home" ), ".github-issue-export"+File.separator+"saved-config.properties" );
-		
 		if ( this.configSavePath.exists() ) {
 			try {
 				FileInputStream fis = new FileInputStream( this.configSavePath );
@@ -109,7 +125,6 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		} else {
 			logger.info( "Config file does not exist : "+this.configSavePath );
 		}
-		
 		// i18n
 		String defaultLocale = this.config.getProperty( GithubIssueExport.ARG_LANG, Locale.getDefault().toString() );
 		Locale loc = Locale.getDefault();
@@ -121,19 +136,10 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 			}
 		}
 		this.lagelBundle = ResourceBundle.getBundle( "org.fugerit.java.github.issue.export.config.gui.gui-label", loc );
-		
-		this.setTitle( this.lagelBundle.getString( "frame.title" ) );
-		
-		JPanel mainPanel = new JPanel( new GridLayout( 11 , 2 ) );
-		
-		configureLayout( this );
-		configureLayout( mainPanel );
-		
+		// create components
 		this.outputArea = new JTextArea( this.lagelBundle.getString( "label.output.area.init" ) );
 		this.outputArea.setEditable( false );
-			
 		String defaultInputText = "";
-		
 		// proxy configuration
 		this.inputProxyHost = newJTextField( this.config.getProperty( GithubIssueExport.ARG_PROXY_HOST, defaultInputText ) );
 		this.inputProxyPort = newJTextField( this.config.getProperty( GithubIssueExport.ARG_PROXY_PORT, defaultInputText ) );
@@ -142,6 +148,8 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		// repository configuration
 		this.inputRepoOwner = newJTextField( this.config.getProperty( GithubIssueExport.ARG_OWNER, defaultInputText ) );
 		this.inputRepoName = newJTextField( this.config.getProperty( GithubIssueExport.ARG_REPO, defaultInputText ) );
+		this.inputRepoUser = newJTextField( this.config.getProperty( GithubIssueExport.ARG_GITHUB_USER, defaultInputText ) );
+		this.inputRepoPass = new JPasswordField();
 		this.inputXlsPath = newJTextField( this.config.getProperty( GithubIssueExport.ARG_XLSFILE, defaultInputText ) );
 		this.inputLocale = newJTextField( defaultLocale );
 		this.inputStateCombo = new JComboBox<String>();
@@ -159,43 +167,77 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		} else if ( selectedState.equalsIgnoreCase( GithubIssueExport.ARG_STATE_ALL ) ) {
 			this.inputStateCombo.setSelectedItem( this.labelStateAll );
 		}
-		
 		// buttons
 		this.buttonSaveConfiguration = new JButton( this.lagelBundle.getString( "button.input.configuration.save" ) );
 		this.buttonSaveConfiguration.addActionListener( this );
 		this.buttonGenerateReport = new JButton( this.lagelBundle.getString( "button.input.generate.report" ) );
 		this.buttonGenerateReport.addActionListener( this );
 		
-		// heading
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.column.prop.name" ), JLabel.CENTER ) );
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.column.prop.value" ), JLabel.CENTER ) );
+	}
+	
+	/*
+	 * Layout
+	 */
+	private void initLayout() {
+		this.setTitle( this.lagelBundle.getString( "frame.title" ) );
+		
+		// configure layout
+		JPanel mainPanel = new JPanel();
+		GridLayout ml = new GridLayout( 13, 1 );
+		mainPanel.setLayout( ml );
+		configureLayout( mainPanel );
+		
+		// repository config
+		// add row
+		addRow( newJLabel( this.lagelBundle.getString( "label.input.repo.title" ), JLabel.CENTER ), mainPanel );
+		// add row
+		JPanel repoPanel1 = new JPanel( new GridLayout( 1 , 2 ) );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.repo.owner" ) ), this.inputRepoOwner, repoPanel1 );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.repo.name" ) ), this.inputRepoName, repoPanel1 );
+		addRow( repoPanel1 , mainPanel );
+		// add row
+		JPanel repoPanel2 = new JPanel( new GridLayout( 1 , 2 ) );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.repo.user" ) ), this.inputRepoUser, repoPanel2 );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.repo.pass" ) ), this.inputRepoPass, repoPanel2 );
+		addRow( repoPanel2 , mainPanel );
+		// add row
+		addRow( new JLabel( "" ), mainPanel );
 		
 		// report config
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.repo.owner" ) ) );
-		mainPanel.add( this.inputRepoOwner );
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.repo.name" ) ) );
-		mainPanel.add( this.inputRepoName );
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.input.language" ) ) );
-		mainPanel.add( this.inputLocale );
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.output.xls" ) ) );
-		mainPanel.add( this.inputXlsPath );
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.state.label" ) ) );
-		mainPanel.add( this.inputStateCombo );
-		
+		// add row
+		addRow( newJLabel( this.lagelBundle.getString( "label.input.report.title" ), JLabel.CENTER ), mainPanel );
+		// add row
+		JPanel reportPanel1 = new JPanel( new GridLayout( 1 , 2 ) );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.input.language" ) ), this.inputLocale, reportPanel1 );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.state.label" ) ), this.inputStateCombo, reportPanel1 );
+		addRow( reportPanel1 , mainPanel );
+		// add row
+		JPanel reportPanel2 = new JPanel( new GridLayout( 1 , 2 ) );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.output.xls" ) ), this.inputXlsPath, reportPanel2 );
+		reportPanel2.add( new JLabel( "" ) );
+		addRow( reportPanel2 , mainPanel );
+		// add row
+		addRow( new JLabel( "" ), mainPanel );
+
 		// proxy field config
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.proxy.host" ) ) );
-		mainPanel.add( this.inputProxyHost );
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.proxy.port" ) ) );
-		mainPanel.add( this.inputProxyPort );
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.proxy.user" ) ) );
-		mainPanel.add( this.inputProxyUser );
-		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.proxy.pass" ) ) );
-		mainPanel.add( this.inputProxyPass );
+		// add row		
+		addRow( newJLabel( this.lagelBundle.getString( "label.input.proxy.title" ), JLabel.CENTER ), mainPanel );				
+		// add row
+		JPanel proxyPanel1 = new JPanel( new GridLayout( 1 , 2 ) );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.proxy.host" ) ), this.inputProxyHost, proxyPanel1 );	
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.proxy.port" ) ), this.inputProxyPort, proxyPanel1 );
+		addRow( proxyPanel1 , mainPanel );
+		// add row
+		JPanel proxyPanel2 = new JPanel( new GridLayout( 1 , 2 ) );
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.proxy.user" ) ), this.inputProxyUser, proxyPanel2 );		
+		newRowPanel( newJLabel( this.lagelBundle.getString( "label.input.proxy.pass" ) ), this.inputProxyPass, proxyPanel2 );
+		addRow( proxyPanel2 , mainPanel );
+		// add row
+		addRow( new JLabel( "" ), mainPanel );
 		
 		// buttons
-		mainPanel.add( this.buttonSaveConfiguration );
-		mainPanel.add( this.buttonGenerateReport );
-		
+		// add row
+		newRowPanel( this.buttonSaveConfiguration, this.buttonGenerateReport, mainPanel );									
 		
 		this.addWindowListener( this );
 		
@@ -205,7 +247,12 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		
 		this.setSize( 640 , 480 );
 		this.setVisible( true );
-		
+	}
+	
+	public GithubIssueGUI( Properties params ) {
+		super( "GITHUB ISSUE EXPORT GUI" );
+		this.initConf();
+		this.initLayout();
 	}
 
 	/* (non-Javadoc)
@@ -220,6 +267,8 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		this.config.setProperty( GithubIssueExport.ARG_XLSFILE , this.inputXlsPath.getText() );
 		this.config.setProperty( GithubIssueExport.ARG_LANG , this.inputLocale.getText() );
 		this.config.setProperty( GithubIssueExport.ARG_PROXY_PASS , new String( this.inputProxyPass.getPassword() ) );
+		this.config.setProperty( GithubIssueExport.ARG_GITHUB_USER , this.inputRepoUser.getText() );
+		this.config.setProperty( GithubIssueExport.ARG_GITHUB_PASS , new String( this.inputRepoPass.getPassword() ) );
 		String selectedState = this.inputStateCombo.getSelectedItem().toString();
 		if ( selectedState.equalsIgnoreCase( this.labelStateOpen ) ) {
 			this.config.setProperty( GithubIssueExport.ARG_STATE , GithubIssueExport.ARG_STATE_OPEN );	
@@ -239,7 +288,9 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 				this.outputArea.setText( baseText+ex.getMessage() );
 			} 
 		} else if ( e.getSource() == this.buttonSaveConfiguration ) {
-			String tempPass = this.config.getProperty( GithubIssueExport.ARG_PROXY_PASS );
+			String tempPass1 = this.config.getProperty( GithubIssueExport.ARG_GITHUB_PASS );
+			String tempPass2 = this.config.getProperty( GithubIssueExport.ARG_PROXY_PASS );
+			this.config.remove( GithubIssueExport.ARG_GITHUB_PASS );
 			this.config.remove( GithubIssueExport.ARG_PROXY_PASS );
 			try {
 				if ( !this.configSavePath.getParentFile().exists() )  {
@@ -253,7 +304,8 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 			} catch (Exception ex) {
 				logger.warn( "Failed to save configuration "+this.configSavePath, ex );
 			}
-			this.config.setProperty( GithubIssueExport.ARG_PROXY_PASS , tempPass );	
+			this.config.setProperty( GithubIssueExport.ARG_GITHUB_PASS , tempPass1 );
+			this.config.setProperty( GithubIssueExport.ARG_PROXY_PASS , tempPass2 );	
 		}
 	}
 
