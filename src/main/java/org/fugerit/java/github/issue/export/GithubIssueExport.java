@@ -13,11 +13,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
+import java.util.ResourceBundle;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -71,21 +71,6 @@ public class GithubIssueExport {
 	public static final String ARG_PROXY_USER = "proxy_user";
 	
 	public static final String ARG_PROXY_PASS = "proxy_pass";
-	
-	private final static String HEADER[] = {
-			"#", "Title", "State", "Labels", "Assigned", "Assigned on", "Created by", "Creation", "Update", "Closed", "# Comments", "URL", "Body" 
-	};
-	
-	private final static String HEADER_IT[] = {
-			"#", "Titolo", "Stato", "Etichette", "Assegnato", "Data assegnazione", "Creato da", "Creazione", "Aggiornamento", "Chiuso", "# Commenti", "URL", "Testo" 
-	};
-	
-	private static final Map<String, String[]> HEADER_MAP = new HashedMap<String, String[]>();
-	static {
-		HEADER_MAP.put( "it" , HEADER_IT );
-		HEADER_MAP.put( "en" , HEADER );
-		HEADER_MAP.put( "default" , HEADER );
-	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static List<Map> parseJsonData( String data ) throws Exception {
@@ -230,8 +215,31 @@ public class GithubIssueExport {
 		Workbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet( "Report github issue" );
 		CellStyle headerStyle = PoiHelper.getHeaderStyle( workbook );
-		String lang = params.getProperty( ARG_LANG, "en" );
-		String[] header = HEADER_MAP.get( lang );
+		String lang = params.getProperty( ARG_LANG );
+		Locale loc = Locale.getDefault();
+		if ( !StringUtils.isEmpty( lang ) ) {
+			try {
+				loc = Locale.forLanguageTag( lang );	
+			} catch (Exception e) {
+				logger.warn( "Errore overriding locale : "+lang+", using default : "+loc, e );
+			}
+		}
+		ResourceBundle headerBundle = ResourceBundle.getBundle( "org.fugerit.java.github.issue.export.config.header-label", loc );
+		String[] header = {
+				headerBundle.getString( "header.column.id" ),
+				headerBundle.getString( "header.column.title" ),
+				headerBundle.getString( "header.column.state" ),
+				headerBundle.getString( "header.column.labels" ),
+				headerBundle.getString( "header.column.assigned" ),
+				headerBundle.getString( "header.column.assigned_on" ),
+				headerBundle.getString( "header.column.created_by" ),
+				headerBundle.getString( "header.column.creation" ),
+				headerBundle.getString( "header.column.update" ),
+				headerBundle.getString( "header.column.closed" ),
+				headerBundle.getString( "header.column.comments_count" ),
+				headerBundle.getString( "header.column.url" ),
+				headerBundle.getString( "header.column.body" ),
+		};
 		PoiHelper.addRow( header , 0, sheet, headerStyle );
 		int count = 1;
 		Iterator<List<String>> itLines = lines.iterator();

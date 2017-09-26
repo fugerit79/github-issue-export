@@ -25,6 +25,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 	
 	private JPasswordField inputProxyPass;
 	
-	private JTextField inputRepoName, inputRepoOwner, inputXlsPath;
+	private JTextField inputRepoName, inputRepoOwner, inputXlsPath, inputLocale;
 	
 	private ResourceBundle lagelBundle;
 	
@@ -90,12 +91,21 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 			logger.info( "Config file does not exist : "+this.configSavePath );
 		}
 		
+		// i18n
+		String defaultLocale = this.config.getProperty( GithubIssueExport.ARG_LANG, Locale.getDefault().toString() );
 		Locale loc = Locale.getDefault();
-		this.lagelBundle = ResourceBundle.getBundle( "gui.gui-label", loc );
+		if ( !StringUtils.isEmpty( defaultLocale ) ) {
+			try {
+				loc = Locale.forLanguageTag( defaultLocale );	
+			} catch (Exception e) {
+				logger.warn( "Errore overriding locale : "+defaultLocale+", using default : "+loc, e );
+			}
+		}
+		this.lagelBundle = ResourceBundle.getBundle( "org.fugerit.java.github.issue.export.config.gui.gui-label", loc );
 		
 		this.setTitle( this.lagelBundle.getString( "frame.title" ) );
 		
-		JPanel mainPanel = new JPanel( new GridLayout( 10 , 2 ) );
+		JPanel mainPanel = new JPanel( new GridLayout( 11 , 2 ) );
 		this.outputArea = new JTextArea( this.lagelBundle.getString( "label.output.area.init" ) );
 		this.outputArea.setEditable( false );
 			
@@ -109,6 +119,7 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		this.inputRepoOwner = new JTextField( this.config.getProperty( GithubIssueExport.ARG_OWNER, defaultInputText ) );
 		this.inputRepoName = new JTextField( this.config.getProperty( GithubIssueExport.ARG_REPO, defaultInputText ) );
 		this.inputXlsPath = new JTextField( this.config.getProperty( GithubIssueExport.ARG_XLSFILE, defaultInputText ) );
+		this.inputLocale = new JTextField( defaultLocale );
 		
 		// buttons
 		this.buttonSaveConfiguration = new JButton( this.lagelBundle.getString( "button.input.configuration.save" ) );
@@ -130,12 +141,13 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.proxy.pass" ) ) );
 		mainPanel.add( this.inputProxyPass );
 		
-		// repo config
+		// report config
 		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.repo.owner" ) ) );
 		mainPanel.add( this.inputRepoOwner );
 		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.repo.name" ) ) );
 		mainPanel.add( this.inputRepoName );
-		
+		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.output.xls" ) ) );
+		mainPanel.add( this.inputXlsPath );
 		mainPanel.add( newJLabel( this.lagelBundle.getString( "label.input.output.xls" ) ) );
 		mainPanel.add( this.inputXlsPath );
 		
