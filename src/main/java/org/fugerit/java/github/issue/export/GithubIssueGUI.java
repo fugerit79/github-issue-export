@@ -160,13 +160,16 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		this.inputStateCombo.addItem( this.labelStateClosed );
 		this.inputStateCombo.addItem( this.labelStateAll );
 		String selectedState = this.config.getProperty( GithubIssueExport.ARG_STATE );
-		if ( selectedState.equalsIgnoreCase( GithubIssueExport.ARG_STATE_OPEN ) ) {
-			this.inputStateCombo.setSelectedItem( this.labelStateOpen );	
-		} else if ( selectedState.equalsIgnoreCase( GithubIssueExport.ARG_STATE_CLOSED ) ) {
-			this.inputStateCombo.setSelectedItem( this.labelStateClosed );
-		} else if ( selectedState.equalsIgnoreCase( GithubIssueExport.ARG_STATE_ALL ) ) {
-			this.inputStateCombo.setSelectedItem( this.labelStateAll );
+		if ( selectedState != null ) {
+			if ( selectedState.equalsIgnoreCase( GithubIssueExport.ARG_STATE_OPEN ) ) {
+				this.inputStateCombo.setSelectedItem( this.labelStateOpen );	
+			} else if ( selectedState.equalsIgnoreCase( GithubIssueExport.ARG_STATE_CLOSED ) ) {
+				this.inputStateCombo.setSelectedItem( this.labelStateClosed );
+			} else if ( selectedState.equalsIgnoreCase( GithubIssueExport.ARG_STATE_ALL ) ) {
+				this.inputStateCombo.setSelectedItem( this.labelStateAll );
+			}
 		}
+		
 		// buttons
 		this.buttonSaveConfiguration = new JButton( this.lagelBundle.getString( "button.input.configuration.save" ) );
 		this.buttonSaveConfiguration.addActionListener( this );
