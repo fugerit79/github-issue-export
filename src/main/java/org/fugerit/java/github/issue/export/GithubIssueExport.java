@@ -45,6 +45,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * --xls-file	issue report file (required)
  * --lang		language (optional)
  * 
+ * --state		filter state of issues [open|closed|all] (optional, default:open)
+ * --limit		max number of issue loaded per page (optional, default:100)
+ * 
+ * --proxy_host proxy address (optional)
+ * --proxy_port proxy port (optional)
+ * --proxy_user proxy user (optional)
+ * --proxy_pass proxy password (optional)
+ * 
  * --help		print help usage
  * 
  * @author Daneel <d@fugerit.org>
@@ -64,6 +72,15 @@ public class GithubIssueExport {
 	
 	public static final String ARG_LANG = "lang";
 	
+	public static final String ARG_LIMIT = "limit";
+	public static final String ARG_LIMIT_DEFAULT = "100";
+	
+	public static final String ARG_STATE = "state";
+	public static final String ARG_STATE_OPEN = "open";
+	public static final String ARG_STATE_CLOSED = "closed";
+	public static final String ARG_STATE_ALL = "all";
+	public static final String ARG_STATE_DEFAULT = ARG_STATE_OPEN;
+	
 	public static final String ARG_PROXY_HOST = "proxy_host";
 	
 	public static final String ARG_PROXY_PORT = "proxy_port";
@@ -71,6 +88,18 @@ public class GithubIssueExport {
 	public static final String ARG_PROXY_USER = "proxy_user";
 	
 	public static final String ARG_PROXY_PASS = "proxy_pass";
+	
+	public static Locale getLocale( String lang ) {
+		Locale loc = Locale.getDefault();
+		if ( !StringUtils.isEmpty( lang ) ) {
+			try {
+				loc = Locale.forLanguageTag( lang );	
+			} catch (Exception e) {
+				logger.warn( "Errore overriding locale : "+lang+", using default : "+loc, e );
+			}
+		}
+		return loc;
+	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static List<Map> parseJsonData( String data ) throws Exception {
@@ -87,10 +116,19 @@ public class GithubIssueExport {
 	@SuppressWarnings({ "rawtypes" })
 	protected static void handle( Properties params ) throws Exception {
 		List<List<String>> lines = new ArrayList<List<String>>();
-		String lang = params.getProperty( ARG_LANG, "en" );
+		String lang = getLocale( params.getProperty( ARG_LANG ) ).toString();
 		// data read
-		String data = readData(params);
+		int currentePage = 1;
+		String limit = params.getProperty( ARG_LIMIT , ARG_LIMIT_DEFAULT );
+		int perPage = Integer.parseInt( limit );
+		String data = readData( params, currentePage, perPage );
 		List<Map> issueList = parseJsonData( data );
+		while ( issueList.size() % perPage == 0 ) {
+			currentePage++;
+			data = readData( params, currentePage, perPage );
+			issueList.addAll( parseJsonData( data ) );
+		}
+		// finishing touch
 		Iterator<Map> issueIt = issueList.iterator();
 		while ( issueIt.hasNext() ) {
 			Map issue = issueIt.next();
@@ -151,9 +189,10 @@ public class GithubIssueExport {
 		final String proxyPort = params.getProperty( ARG_PROXY_PORT );
 		final String proxyUser = params.getProperty( ARG_PROXY_USER );
 		final String proxyPass = params.getProperty( ARG_PROXY_PASS );
+		logger.info( "connecting to url : "+url );
 		HttpURLConnection conn;
 		if ( !StringUtils.isEmpty( proxyHost ) && !StringUtils.isEmpty( proxyPort ) ) {
-			logger.info( "using proxy : "+proxyHost+":"+proxyPort+" (user:"+proxyUser+")" );
+			logger.debug( "using proxy : "+proxyHost+":"+proxyPort+" (user:"+proxyUser+")" );
 			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt( proxyPort )));
 			if ( !StringUtils.isEmpty( proxyUser ) && !StringUtils.isEmpty( proxyPass ) ) {
 				Authenticator authenticator = new Authenticator() {
@@ -169,7 +208,6 @@ public class GithubIssueExport {
 			URL u = new URL( url );
 			conn = (HttpURLConnection)u.openConnection();
 		}
-		
 		StringBuffer buffer = new StringBuffer();
 		if ( conn.getResponseCode() != 200 ) {
 			throw new Exception( "HTTP exit code : "+conn.getResponseCode() );
@@ -186,10 +224,14 @@ public class GithubIssueExport {
 		return buffer.toString();
 	}
 	
-	private static String readData( Properties params ) throws Exception {
+	private static String readData( Properties params, int currentPage, int perPage ) throws Exception {
 		String repo = params.getProperty( ARG_REPO );
 		String owner = params.getProperty( ARG_OWNER );
-		String url = "https://api.github.com/repos/"+owner+"/"+repo+"/issues?page=1&per_page=1000";
+		String state = params.getProperty( ARG_STATE, ARG_STATE_DEFAULT );
+		if ( StringUtils.isEmpty( state ) ) {
+			state = ARG_STATE_DEFAULT;
+		}
+		String url = "https://api.github.com/repos/"+owner+"/"+repo+"/issues?page="+currentPage+"&per_page="+perPage+"&state="+state;
 		return readUrlData( url, params );
 	}
 	
@@ -216,14 +258,7 @@ public class GithubIssueExport {
 		Sheet sheet = workbook.createSheet( "Report github issue" );
 		CellStyle headerStyle = PoiHelper.getHeaderStyle( workbook );
 		String lang = params.getProperty( ARG_LANG );
-		Locale loc = Locale.getDefault();
-		if ( !StringUtils.isEmpty( lang ) ) {
-			try {
-				loc = Locale.forLanguageTag( lang );	
-			} catch (Exception e) {
-				logger.warn( "Errore overriding locale : "+lang+", using default : "+loc, e );
-			}
-		}
+		Locale loc = getLocale( lang );
 		ResourceBundle headerBundle = ResourceBundle.getBundle( "org.fugerit.java.github.issue.export.config.header-label", loc );
 		String[] header = {
 				headerBundle.getString( "header.column.id" ),
