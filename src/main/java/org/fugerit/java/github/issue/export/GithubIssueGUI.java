@@ -176,7 +176,7 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 				String baseText = this.lagelBundle.getString( "label.output.area.generate.ok" );
 				this.outputArea.setText( baseText + new File( this.inputXlsPath.getText() ).getAbsolutePath() );
 			}  catch (Exception ex) {
-				logger.warn( "Report generation failed", e );
+				logger.warn( "Report generation failed "+ex, ex );
 				String baseText = this.lagelBundle.getString( "label.output.area.generate.ko" );
 				this.outputArea.setText( baseText+ex.getMessage() );
 			} 
@@ -191,7 +191,7 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 				this.config.store( fos , "Config saved on "+new Date() );
 				fos.close();
 			} catch (Exception ex) {
-				logger.warn( "Failed to save configuration "+this.configSavePath, e );
+				logger.warn( "Failed to save configuration "+this.configSavePath, ex );
 			}
 			this.config.setProperty( GithubIssueExport.ARG_PROXY_PASS , tempPass );	
 		}
