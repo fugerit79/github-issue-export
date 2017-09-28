@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>english labels / default</comment>
+
+<entry key="frame.title"> Github Issue Export GUI </entry>
+<entry key="label.menu.action.title"> Action </entry>
+<entry key="label.menu.help.title"> ? </entry>
+
+<entry key="label.menu.help.quickstart"> Quickstart </entry>
+<entry key="label.menu.help.info"> Info </entry>
+
+<entry key="label.column.prop.name"> Parameter </entry>
+<entry key="label.column.prop.value"> Value </entry>
+
+<entry key="label.input.repo.title"> Repository </entry>
+<entry key="label.input.repo.owner"> Owner </entry>
+<entry key="label.input.repo.name"> Name </entry>
+<entry key="label.input.repo.user"> Github user </entry>
+<entry key="label.input.repo.pass"> Github password </entry>
+
+<entry key="label.input.report.title"> Report </entry>
+<entry key="label.input.input.language"> Language (Locale) </entry>
+<entry key="label.input.output.xls"> Output xls </entry>
+<entry key="label.input.state.label"> Issue state </entry>
+<entry key="label.input.state.closed"> Closed </entry>
+<entry key="label.input.state.open"> Open </entry>
+<entry key="label.input.state.all"> All </entry>
+
+<entry key="label.input.proxy.title"> Proxy </entry>
+<entry key="label.input.proxy.host"> Host </entry>
+<entry key="label.input.proxy.port"> Port </entry>
+<entry key="label.input.proxy.user"> User </entry>
+<entry key="label.input.proxy.pass"> Password </entry>
+
+
+<entry key="button.input.configuration.save"> Save Configuration </entry>
+<entry key="button.input.generate.report"> Generate Report </entry>
+<entry key="label.output.area.init">Application messages display here
+For a simple guide click on Help (?) Menu - Quickstart
+</entry>
+<entry key="label.output.area.generate.validate.noOutputFile"> The path to the output xls must be set  </entry>
+<entry key="label.output.area.generate.start"> Start generation  </entry>
+<entry key="label.output.area.generate.ok"> Report generated :  </entry>
+<entry key="label.output.area.generate.ko"> Report generation error : </entry>
+<entry key="label.output.area.configuration.saved"> Configuration saved </entry>
+
+<entry key="label.menu.help.dialog.quickstart">
+<![CDATA[
+<html>
+<body>
+<div style="font-family: Arial; margin: 5px;">
+<h3>Quickstart</h3>
+<p>How to use this utility :</p>
+<ul>
+	<li>set parameters</li>
+</ul>
+</div>
+</body>
+</html>
+]]>
+</entry>
+<entry key="label.menu.help.dialog.info">
+<![CDATA[
+<html>
+<body>
+<div style="font-family: Arial; margin: 5px;">
+<h3>GUI For github-issue-export utility</h3>
+<p>Version 0.3.0 (2017-09-29)</p>
+</div>
+</body>
+</html>
+]]>
+</entry>
+
+</properties>
