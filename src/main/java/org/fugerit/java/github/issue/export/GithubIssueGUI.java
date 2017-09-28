@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -278,14 +279,33 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 		this.setVisible( true );
 	}
 	
+	private void checkPreset( Properties params, String key, JTextField field ) {
+		String value = params.getProperty( key );
+		if ( this.config.isEmpty()  && value != null ) {
+			field.setText( value );
+		}
+		System.out.println( "key : "+key+" - > "+value );
+	}
+	
 	public GithubIssueGUI( Properties params ) {
 		super( "GITHUB ISSUE EXPORT GUI" );
 		this.initConf();
+		System.out.println( params );
+		this.checkPreset( params , GithubIssueExportMain.ARG_GUI_PRESET_OWNER,  this.inputRepoOwner );
+		this.checkPreset( params , GithubIssueExportMain.ARG_GUI_PRESET_REPO,  this.inputRepoName );
+		this.checkPreset( params , GithubIssueExportMain.ARG_GUI_PRESET_PROXY_HOST,  this.inputProxyHost );
+		this.checkPreset( params , GithubIssueExportMain.ARG_GUI_PRESET_PROXY_PORT,  this.inputProxyPort );
 		this.initLayout();
 	}
 	
-	private void openInfoDialog( String title, String resourcePath ) {
+	private void openInfoDialog( String title, String content ) {
 		final JDialog frame = new JDialog( this, title, true );
+		frame.setSize( 400, 300 );
+		frame.setLayout( new GridLayout( 1 , 1 ) );
+		JTextPane area = new JTextPane();
+		area.setContentType( "text/html" );
+		area.setText( content );
+		frame.add( area );
 		//frame.getContentPane().add(panel);
 		frame.pack();
 		frame.setVisible(true);
@@ -314,15 +334,20 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 			if ( StringUtils.isEmpty( this.inputXlsPath.getText() ) ) {
 				this.outputArea.setText( this.lagelBundle.getString( "label.output.area.generate.validate.noOutputFile" ) );
 			} else {
-				try {
-					GithubIssueExport.handle( this.config );
-					String baseText = this.lagelBundle.getString( "label.output.area.generate.ok" );
-					this.outputArea.setText( baseText + new File( this.inputXlsPath.getText() ).getAbsolutePath() );
-				}  catch (Exception ex) {
-					logger.warn( "Report generation failed "+ex, ex );
-					String baseText = this.lagelBundle.getString( "label.output.area.generate.ko" );
-					this.outputArea.setText( baseText+ex.getMessage() );
-				} 
+					String baseText1 = this.lagelBundle.getString( "label.output.area.generate.start" );
+					this.outputArea.setText( baseText1 );
+					Runnable runExport = newReportExportRun( this );
+					Thread t = new Thread( runExport );
+					t.start();
+//					try {
+//						GithubIssueExport.handle( this.config );
+//						String baseText = this.lagelBundle.getString( "label.output.area.generate.ok" );
+//						this.outputArea.setText( baseText + new File( this.inputXlsPath.getText() ).getAbsolutePath() );
+//					}  catch (Exception ex) {
+//						logger.warn( "Report generation failed "+ex, ex );
+//						String baseText = this.lagelBundle.getString( "label.output.area.generate.ko" );
+//						this.outputArea.setText( baseText+ex.getMessage() );
+//					} 
 			}
 		} else if ( source == this.buttonSaveConfiguration || source == this.actionSaveConfigurationMI ) {
 			String tempPass1 = this.config.getProperty( GithubIssueExport.ARG_GITHUB_PASS );
@@ -344,9 +369,9 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 			this.config.setProperty( GithubIssueExport.ARG_GITHUB_PASS , tempPass1 );
 			this.config.setProperty( GithubIssueExport.ARG_PROXY_PASS , tempPass2 );	
 		} else if ( source == this.helpInfoMI ) {
-			this.openInfoDialog( this.helpInfoMI.getText() , "" );
+			this.openInfoDialog( this.helpInfoMI.getText() , this.lagelBundle.getString( "label.menu.help.dialog.info" ) );
 		} else if ( source == this.helpQuickstartMI ) {
-			this.openInfoDialog( this.helpInfoMI.getText() , "" );
+			this.openInfoDialog( this.helpInfoMI.getText() , this.lagelBundle.getString( "label.menu.help.dialog.quickstart" ) );
 		}
 	}
 	
@@ -402,6 +427,22 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 	 */
 	public void windowDeactivated(WindowEvent e) {
 	}
-		
+	
+	private Runnable newReportExportRun( final GithubIssueGUI gui ) {
+		return new Runnable() {
+			public void run() {
+				try {
+					GithubIssueExport.handle( gui.config );
+					String baseText2 = gui.lagelBundle.getString( "label.output.area.generate.ok" );
+					gui.outputArea.setText( baseText2 + new File( gui.inputXlsPath.getText() ).getAbsolutePath() );
+				} catch (Exception ex) {
+					logger.warn( "Report generation failed "+ex, ex );
+					String baseText = gui.lagelBundle.getString( "label.output.area.generate.ko" );
+					gui.outputArea.setText( baseText+ex.getMessage() );
+				}
+			}
+		};
+	}
 	
 }
+

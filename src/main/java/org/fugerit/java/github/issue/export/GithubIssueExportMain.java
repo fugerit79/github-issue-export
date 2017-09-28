@@ -3,6 +3,7 @@
  */
 package org.fugerit.java.github.issue.export;
 
+import java.util.Locale;
 import java.util.Properties;
 
 import org.fugerit.java.core.cli.ArgUtils;
@@ -18,12 +19,24 @@ public class GithubIssueExportMain {
 	protected static final Logger logger = LoggerFactory.getLogger(GithubIssueExportMain.class);
 	
 	public static final String ARG_GUI = "gui";
+
+	public static final String ARG_GUI_LOCALE = "gui_locale";
+	
+	public static final String ARG_GUI_PRESET_OWNER = "gui_preset-"+GithubIssueExport.ARG_OWNER;
+	public static final String ARG_GUI_PRESET_REPO = "gui_preset-"+GithubIssueExport.ARG_REPO;
+	public static final String ARG_GUI_PRESET_PROXY_HOST = "gui_preset-"+GithubIssueExport.ARG_PROXY_HOST;
+	public static final String ARG_GUI_PRESET_PROXY_PORT = "gui_preset-"+GithubIssueExport.ARG_PROXY_PORT;
 	
 	public static void main( String[] args ) {
 		Properties params = ArgUtils.getArgs( args );
 		try {
 			String gui = params.getProperty( ARG_GUI, "1" );
 			if ( "1".equalsIgnoreCase( gui ) ) {
+				String guiLocale = params.getProperty( ARG_GUI_LOCALE );
+				if (guiLocale != null) {
+					logger.info( "gui locale : "+guiLocale );
+					Locale.setDefault( Locale.forLanguageTag( guiLocale ) );
+				}
 				logger.info( "gui mode : "+gui+" (default if gui mode, if no gui add --gui 0" );
 				new GithubIssueGUI( params ); 
 			} else {

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>english labels / default</comment>
+
+<entry key="frame.title"> Interfaccia esportazione Issue Github </entry>
+<entry key="label.menu.action.title"> Azioni </entry>
+<entry key="label.menu.help.title"> ? </entry>
+
+<entry key="label.menu.help.quickstart"> Guida </entry>
+<entry key="label.menu.help.info"> Informazioni </entry>
+
+<entry key="label.column.prop.name"> Parametro </entry>
+<entry key="label.column.prop.value"> Valore </entry>
+
+<entry key="label.input.repo.title"> Repository Github </entry>
+<entry key="label.input.repo.owner"> Proprietario (*) </entry>
+<entry key="label.input.repo.name"> Nome (*) </entry>
+<entry key="label.input.repo.user"> User </entry>
+<entry key="label.input.repo.pass"> Password </entry>
+
+<entry key="label.input.report.title"> Report Excel (.xls) </entry>
+<entry key="label.input.input.language"> Lingua (Locale) </entry>
+<entry key="label.input.output.xls"> Percorso file (*) </entry>
+<entry key="label.input.state.label"> Stato issue </entry>
+<entry key="label.input.state.closed"> Chiuse </entry>
+<entry key="label.input.state.open"> Aperte </entry>
+<entry key="label.input.state.all"> Tute </entry>
+
+<entry key="label.input.proxy.title"> Proxy </entry>
+<entry key="label.input.proxy.host"> Indirizzo </entry>
+<entry key="label.input.proxy.port"> Porta </entry>
+<entry key="label.input.proxy.user"> Utente </entry>
+<entry key="label.input.proxy.pass"> Password </entry>
+
+
+<entry key="button.input.configuration.save"> Salva configurazione </entry>
+<entry key="button.input.generate.report"> Generazione report excel </entry>
+<entry key="label.output.area.init">Qui vengono mostrati i messaggi dell'applicazione.
+Per le istruzioni di utilizzo premi sul menu di aiuto (?) e poi Guida.
+</entry>
+<entry key="label.output.area.generate.validate.noOutputFile"> Devi impostare il percorso del file excel  </entry>
+<entry key="label.output.area.generate.start"> Inizio generatione  </entry>
+<entry key="label.output.area.generate.ok"> Report generato correttamente :  </entry>
+<entry key="label.output.area.generate.ko"> Errore generazione report : </entry>
+<entry key="label.output.area.configuration.saved"> Configurazione salvata correttamente </entry>
+
+<entry key="label.menu.help.dialog.quickstart">
+<![CDATA[
+<html>
+<body>
+<div style="font-family: Arial; margin: 5px;">
+<h3>Quickstart</h3>
+<p>How to use this utility :</p>
+<ul>
+	<li>set parameters</li>
+</ul>
+</div>
+</body>
+</html>
+]]>
+</entry>
+<entry key="label.menu.help.dialog.info">
+<![CDATA[
+<html>
+<body>
+<div style="font-family: Arial; margin: 5px;">
+<h3>GUI For github-issue-export utility</h3>
+<p>Version 0.3.0 (2017-09-29)</p>
+</div>
+</body>
+</html>
+]]>
+</entry>
+
+</properties>

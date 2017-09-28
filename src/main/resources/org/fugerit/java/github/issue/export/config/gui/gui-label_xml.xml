@@ -37,15 +37,40 @@
 <entry key="button.input.configuration.save"> Save Configuration </entry>
 <entry key="button.input.generate.report"> Generate Report </entry>
 <entry key="label.output.area.init">Application messages display here
-Quickstart:
-Set proxy host, port, user and pass if needed
-Repository owner and repository name are mandatory
-(You can get them from github url https://www.github.com/[OWNER]/[NAME])
-Output xls is the path to the generate .xls file
+For a simple guide click on Help (?) Menu - Quickstart
 </entry>
 <entry key="label.output.area.generate.validate.noOutputFile"> The path to the output xls must be set  </entry>
+<entry key="label.output.area.generate.start"> Start generation  </entry>
 <entry key="label.output.area.generate.ok"> Report generated :  </entry>
 <entry key="label.output.area.generate.ko"> Report generation error : </entry>
 <entry key="label.output.area.configuration.saved"> Configuration saved </entry>
+
+<entry key="label.menu.help.dialog.quickstart">
+<![CDATA[
+<html>
+<body>
+<div style="font-family: Arial; margin: 5px;">
+<h3>Quickstart</h3>
+<p>How to use this utility :</p>
+<ul>
+	<li>set parameters</li>
+</ul>
+</div>
+</body>
+</html>
+]]>
+</entry>
+<entry key="label.menu.help.dialog.info">
+<![CDATA[
+<html>
+<body>
+<div style="font-family: Arial; margin: 5px;">
+<h3>GUI For github-issue-export utility</h3>
+<p>Version 0.3.0 (2017-09-29)</p>
+</div>
+</body>
+</html>
+]]>
+</entry>
 
 </properties>
