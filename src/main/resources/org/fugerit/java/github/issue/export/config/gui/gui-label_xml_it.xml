@@ -50,11 +50,22 @@ Per le istruzioni di utilizzo premi sul menu di aiuto (?) e poi Guida.
 <html>
 <body>
 <div style="font-family: Arial; margin: 5px;">
-<h3>Quickstart</h3>
-<p>How to use this utility :</p>
-<ul>
-	<li>set parameters</li>
-</ul>
+<h3>Guida</h3>
+<p>Questo è uno strumento che permette di esportare l'elenco delle issue in un repository in formato EXCEL.</p>
+<p>I parametri obbligatori sono : <b>Proprietario e nome del repository github, percorso del report excel da generare</b>.</p>
+<p>Le url del repository github sono nel formato : 
+<br/>
+https://github.com/{proprietario}/{nome}-issue-export/issues
+<br/>
+Il parametri <b>proprietario</b> e <b>nome</b> del repository github vanno impostati di conseguenza.
+</p>
+<p>
+NOTE: le api github impongono un limite giornaliero alle interrogazioni che è possibile eseguire.
+<br/>
+Impostando l'utenze github tale limite viene aumentato.
+<br/>
+Pertanto anche se non obbligatoria, può essere utile impostare l'utenza github se si ottiene un errore 403.
+</p>
 </div>
 </body>
 </html>
