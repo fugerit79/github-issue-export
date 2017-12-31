@@ -25,7 +25,7 @@
 <entry key="label.input.state.label"> Stato issue </entry>
 <entry key="label.input.state.closed"> Chiuse </entry>
 <entry key="label.input.state.open"> Aperte </entry>
-<entry key="label.input.state.all"> Tute </entry>
+<entry key="label.input.state.all"> Tutte </entry>
 
 <entry key="label.input.proxy.title"> Proxy </entry>
 <entry key="label.input.proxy.host"> Indirizzo </entry>
