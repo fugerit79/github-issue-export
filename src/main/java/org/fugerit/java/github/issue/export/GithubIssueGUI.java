@@ -290,11 +290,14 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 	public GithubIssueGUI( Properties params ) {
 		super( "GITHUB ISSUE EXPORT GUI" );
 		this.initConf();
-		System.out.println( params );
 		this.checkPreset( params , GithubIssueExportMain.ARG_GUI_PRESET_OWNER,  this.inputRepoOwner );
 		this.checkPreset( params , GithubIssueExportMain.ARG_GUI_PRESET_REPO,  this.inputRepoName );
 		this.checkPreset( params , GithubIssueExportMain.ARG_GUI_PRESET_PROXY_HOST,  this.inputProxyHost );
 		this.checkPreset( params , GithubIssueExportMain.ARG_GUI_PRESET_PROXY_PORT,  this.inputProxyPort );
+		String presetCacheMode = params.getProperty( GithubIssueExportMain.ARG_GUI_PRESET_ARG_ASSIGNEE_DATE_MODE );
+		if ( presetCacheMode != null ) {
+			this.config.setProperty( GithubIssueExport.ARG_ASSIGNEE_DATE_MODE , presetCacheMode );
+		}
 		this.initLayout();
 	}
 	

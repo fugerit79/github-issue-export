@@ -126,6 +126,7 @@ public class GithubIssueExport {
 	protected static void handle( Properties params ) throws Exception {
 		GithubIssueInfo info = new GithubIssueInfo(params);
 		try {
+			logger.debug( "params "+params );
 			doHandle( info );
 		} catch ( Exception e ) {
 			throw e;
@@ -142,6 +143,7 @@ public class GithubIssueExport {
 		List<List<String>> lines = new ArrayList<List<String>>();
 		
 		String cacheMode = info.getProperty( GithubIssueExport.ARG_ASSIGNEE_DATE_MODE, GithubIssueExport.ARG_ASSIGNEE_DATE_MODE_SKIP );
+		logger.info( "cache-mode : "+cacheMode );
 		
 		String lang = getLocale( info.getProperty( ARG_LANG ) ).toString();
 		// data read
@@ -184,9 +186,11 @@ public class GithubIssueExport {
 			if ( assignee != null ) {
 				currentLine.add( String.valueOf( assignee.get( "login" ) ) );
 				String assignDate = null;
-				if ( activeCache( cacheMode) ) {
+				boolean activeCache = activeCache( cacheMode);
+				if ( activeCache ) {
 					assignDate = info.getCacheEntry( issueId , GithubIssueConfig.FIELD_ASSIGN_DATE );
 				}
+				logger.info( "activeCache : "+activeCache+" - issueId:"+issueId+" , assign date "+assignDate );
 				if ( assignDate == null ) {
 					if ( "closed".equalsIgnoreCase( state ) && ARG_ASSIGNEE_DATE_MODE_SKIP_CLOSED.equals( cacheMode ) ) {
 						// just skip
@@ -200,7 +204,7 @@ public class GithubIssueExport {
 							String eventType = String.valueOf( currentEvent.get( "event" ) );
 							if ( eventType.equalsIgnoreCase( "assigned" ) ) {
 								assignDate = String.valueOf( currentEvent.get( "created_at" ) );
-								if ( activeCache( cacheMode) ) {
+								if ( activeCache ) {
 									info.addCacheEntry( issueId , GithubIssueConfig.FIELD_ASSIGN_DATE, assignDate );
 								}
 							}
