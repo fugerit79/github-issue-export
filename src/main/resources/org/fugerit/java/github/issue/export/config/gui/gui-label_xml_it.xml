@@ -40,7 +40,7 @@
 Per le istruzioni di utilizzo premi sul menu di aiuto (?) e poi Guida.
 </entry>
 <entry key="label.output.area.generate.validate.noOutputFile"> Devi impostare il percorso del file excel  </entry>
-<entry key="label.output.area.generate.start"> Inizio generatione  </entry>
+<entry key="label.output.area.generate.start"> Inizio generazione  </entry>
 <entry key="label.output.area.generate.ok"> Report generato correttamente :  </entry>
 <entry key="label.output.area.generate.ko"> Errore generazione report : </entry>
 <entry key="label.output.area.configuration.saved"> Configurazione salvata correttamente </entry>
