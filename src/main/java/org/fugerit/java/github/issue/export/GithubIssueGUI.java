@@ -128,7 +128,7 @@ public class GithubIssueGUI extends JFrame implements WindowListener, ActionList
 	private void initConf() {
 		this.config = new Properties();
 		// handle config file
-		this.configSavePath = new File( System.getProperty( "user.home" ), ".github-issue-export"+File.separator+"saved-config.properties" );
+		this.configSavePath = GithubIssueConfig.getInstance().getMainConfigFile();
 		if ( this.configSavePath.exists() ) {
 			try {
 				FileInputStream fis = new FileInputStream( this.configSavePath );

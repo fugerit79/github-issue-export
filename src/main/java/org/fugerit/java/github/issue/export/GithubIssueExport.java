@@ -10,6 +10,7 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +65,12 @@ public class GithubIssueExport {
 	
 	public static final String ARG_HELP = "help";
 	
+	public static final String ARG_ASSIGNEE_DATE_MODE = "assignee_date_mode";
+	public static final String ARG_ASSIGNEE_DATE_MODE_CACHE = "cache";
+	public static final String ARG_ASSIGNEE_DATE_MODE_ALL = "all";
+	public static final String ARG_ASSIGNEE_DATE_MODE_SKIP = "skip";
+	public static final String ARG_ASSIGNEE_DATE_MODE_SKIP_CLOSED = "skip-closed";
+	
 	public static final String ARG_REPO = "repo";
 	public static final String ARG_OWNER = "owner";
 	
@@ -117,17 +124,35 @@ public class GithubIssueExport {
 	
 	@SuppressWarnings({ "rawtypes" })
 	protected static void handle( Properties params ) throws Exception {
+		GithubIssueInfo info = new GithubIssueInfo(params);
+		try {
+			doHandle( info );
+		} catch ( Exception e ) {
+			throw e;
+		} finally {
+			GithubIssueConfig.getInstance().saveCachePropForRepo( info.getCache() , info.getOwner(), info.getRepo() );
+		}
+	}
+		
+	private static boolean activeCache( String cacheMode ) {
+		return  ARG_ASSIGNEE_DATE_MODE_ALL.equals( cacheMode ) || ARG_ASSIGNEE_DATE_MODE_SKIP_CLOSED.equals( cacheMode );
+	}
+	
+	private static void doHandle( GithubIssueInfo info ) throws Exception {
 		List<List<String>> lines = new ArrayList<List<String>>();
-		String lang = getLocale( params.getProperty( ARG_LANG ) ).toString();
+		
+		String cacheMode = info.getProperty( GithubIssueExport.ARG_ASSIGNEE_DATE_MODE, GithubIssueExport.ARG_ASSIGNEE_DATE_MODE_SKIP );
+		
+		String lang = getLocale( info.getProperty( ARG_LANG ) ).toString();
 		// data read
 		int currentePage = 1;
-		String limit = params.getProperty( ARG_LIMIT , ARG_LIMIT_DEFAULT );
+		String limit = info.getProperty( ARG_LIMIT , ARG_LIMIT_DEFAULT );
 		int perPage = Integer.parseInt( limit );
-		String data = readData( params, currentePage, perPage );
+		String data = readData( info, currentePage, perPage );
 		List<Map> issueList = parseJsonData( data );
 		while ( issueList.size() % perPage == 0 ) {
 			currentePage++;
-			data = readData( params, currentePage, perPage );
+			data = readData( info, currentePage, perPage );
 			issueList.addAll( parseJsonData( data ) );
 		}
 		// finishing touch
@@ -135,9 +160,11 @@ public class GithubIssueExport {
 		while ( issueIt.hasNext() ) {
 			Map issue = issueIt.next();
 			List<String> currentLine = new ArrayList<String>();
-			currentLine.add( String.valueOf( issue.get( "number" ) ) );
+			String issueId = String.valueOf( issue.get( "number" ) );
+			String state = String.valueOf( issue.get( "state" ) );
+			currentLine.add( issueId );
 			currentLine.add( String.valueOf( issue.get( "title" ) ) );
-			currentLine.add( String.valueOf( issue.get( "state" ) ) );
+			currentLine.add( state );
 			// labels
 			List labels = (List)issue.get( "labels" );
 			if ( labels != null && labels.size() > 0 ) {
@@ -156,19 +183,31 @@ public class GithubIssueExport {
 			Map assignee = (Map)issue.get( "assignee" );
 			if ( assignee != null ) {
 				currentLine.add( String.valueOf( assignee.get( "login" ) ) );
-				String eventUrl = String.valueOf( issue.get( "events_url" ) );
-				String eventsData = readUrlData( eventUrl, params );
-				List<Map> eventsList = parseJsonData( eventsData );
-				Iterator<Map> eventsIt = eventsList.iterator();
 				String assignDate = null;
-				while ( eventsIt.hasNext() ) {
-					Map currentEvent = eventsIt.next();
-					String eventType = String.valueOf( currentEvent.get( "event" ) );
-					if ( eventType.equalsIgnoreCase( "assigned" ) ) {
-						assignDate = FormatHelper.formatDate( currentEvent.get( "created_at" ), lang );
-					}
+				if ( activeCache( cacheMode) ) {
+					assignDate = info.getCacheEntry( issueId , GithubIssueConfig.FIELD_ASSIGN_DATE );
 				}
-				currentLine.add( assignDate );
+				if ( assignDate == null ) {
+					if ( "closed".equalsIgnoreCase( state ) && ARG_ASSIGNEE_DATE_MODE_SKIP_CLOSED.equals( cacheMode ) ) {
+						// just skip
+					} else {
+						String eventUrl = String.valueOf( issue.get( "events_url" ) );
+						String eventsData = readUrlData( eventUrl, info );
+						List<Map> eventsList = parseJsonData( eventsData );
+						Iterator<Map> eventsIt = eventsList.iterator();
+						while ( eventsIt.hasNext() ) {
+							Map currentEvent = eventsIt.next();
+							String eventType = String.valueOf( currentEvent.get( "event" ) );
+							if ( eventType.equalsIgnoreCase( "assigned" ) ) {
+								assignDate = String.valueOf( currentEvent.get( "created_at" ) );
+								if ( activeCache( cacheMode) ) {
+									info.addCacheEntry( issueId , GithubIssueConfig.FIELD_ASSIGN_DATE, assignDate );
+								}
+							}
+						}		
+					}				
+				}
+				currentLine.add( FormatHelper.formatDate( assignDate, lang ) );
 			} else {
 				currentLine.add( "-" );
 				currentLine.add( "-" );
@@ -183,19 +222,19 @@ public class GithubIssueExport {
 			currentLine.add( String.valueOf( issue.get( "body" ) ) );
 			lines.add( currentLine );
 		}
-		handleExcel(params, lines);
+		handleExcel( info, lines);
 	}
 
-	private static String readUrlData( String url, Properties params ) throws Exception {
-		final String proxyHost = params.getProperty( ARG_PROXY_HOST );
-		final String proxyPort = params.getProperty( ARG_PROXY_PORT );
-		final String proxyUser = params.getProperty( ARG_PROXY_USER );
-		final String proxyPass = params.getProperty( ARG_PROXY_PASS );
-		String githubUser = params.getProperty( ARG_GITHUB_USER );
-		String githubPass = params.getProperty( ARG_GITHUB_PASS );
+	private static String readUrlData( String url, GithubIssueInfo info ) throws Exception {
+		final String proxyHost = info.getProperty( ARG_PROXY_HOST );
+		final String proxyPort = info.getProperty( ARG_PROXY_PORT );
+		final String proxyUser = info.getProperty( ARG_PROXY_USER );
+		final String proxyPass = info.getProperty( ARG_PROXY_PASS );
+		String githubUser = info.getProperty( ARG_GITHUB_USER );
+		String githubPass = info.getProperty( ARG_GITHUB_PASS );
 		logger.info( "connecting to url : "+url+" (user:"+githubUser+")" );
 		if ( StringUtils.isNotEmpty( githubUser ) && StringUtils.isNotEmpty( githubPass ) ) {
-			url = url.replace( "api.github.com" , githubUser+":"+githubPass+"@api.github.com" );
+			url = url.replace( "api.github.com" , githubUser+":"+URLEncoder.encode( githubPass, "UTF-8" )+"@api.github.com" );
 		}
 		HttpURLConnection conn;
 		if ( !StringUtils.isEmpty( proxyHost ) && !StringUtils.isEmpty( proxyPort ) ) {
@@ -231,15 +270,15 @@ public class GithubIssueExport {
 		return buffer.toString();
 	}
 	
-	private static String readData( Properties params, int currentPage, int perPage ) throws Exception {
-		String repo = params.getProperty( ARG_REPO );
-		String owner = params.getProperty( ARG_OWNER );
-		String state = params.getProperty( ARG_STATE, ARG_STATE_DEFAULT );
+	private static String readData( GithubIssueInfo info, int currentPage, int perPage ) throws Exception {
+		String repo = info.getRepo();
+		String owner = info.getOwner();
+		String state = info.getProperty( ARG_STATE, ARG_STATE_DEFAULT );
 		if ( StringUtils.isEmpty( state ) ) {
 			state = ARG_STATE_DEFAULT;
 		}
 		String url = "https://api.github.com/repos/"+owner+"/"+repo+"/issues?page="+currentPage+"&per_page="+perPage+"&state="+state;
-		return readUrlData( url, params );
+		return readUrlData( url, info );
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -259,12 +298,12 @@ public class GithubIssueExport {
 		return res;
 	}
 	
-	private static void handleExcel( Properties params, List<List<String>> lines ) throws Exception {
-		String xlsFile = params.getProperty( "xls-file" );
+	private static void handleExcel( GithubIssueInfo info, List<List<String>> lines ) throws Exception {
+		String xlsFile = info.getProperty( "xls-file" );
 		Workbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet( "Report github issue" );
 		CellStyle headerStyle = PoiHelper.getHeaderStyle( workbook );
-		String lang = params.getProperty( ARG_LANG );
+		String lang = info.getProperty( ARG_LANG );
 		Locale loc = getLocale( lang );
 		ResourceBundle headerBundle = ResourceBundle.getBundle( "org.fugerit.java.github.issue.export.config.header-label", loc );
 		String[] header = {
