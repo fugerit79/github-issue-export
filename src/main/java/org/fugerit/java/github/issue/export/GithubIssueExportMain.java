@@ -22,6 +22,7 @@ public class GithubIssueExportMain {
 
 	public static final String ARG_GUI_LOCALE = "gui_locale";
 	
+	public static final String ARG_GUI_PRESET_ARG_ASSIGNEE_DATE_MODE = "gui_preset-"+GithubIssueExport.ARG_ASSIGNEE_DATE_MODE;
 	public static final String ARG_GUI_PRESET_OWNER = "gui_preset-"+GithubIssueExport.ARG_OWNER;
 	public static final String ARG_GUI_PRESET_REPO = "gui_preset-"+GithubIssueExport.ARG_REPO;
 	public static final String ARG_GUI_PRESET_PROXY_HOST = "gui_preset-"+GithubIssueExport.ARG_PROXY_HOST;
