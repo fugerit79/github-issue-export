@@ -40,7 +40,7 @@
 Per le istruzioni di utilizzo premi sul menu di aiuto (?) e poi Guida.
 </entry>
 <entry key="label.output.area.generate.validate.noOutputFile"> Devi impostare il percorso del file excel  </entry>
-<entry key="label.output.area.generate.start"> Inizio generatione  </entry>
+<entry key="label.output.area.generate.start"> Inizio generazione  </entry>
 <entry key="label.output.area.generate.ok"> Report generato correttamente :  </entry>
 <entry key="label.output.area.generate.ko"> Errore generazione report : </entry>
 <entry key="label.output.area.configuration.saved"> Configurazione salvata correttamente </entry>
@@ -77,7 +77,7 @@ Pertanto anche se non obbligatoria, può essere utile impostare l'utenza github 
 <body>
 <div style="font-family: Arial; margin: 5px;">
 <h3>GUI For github-issue-export utility</h3>
-<p>Version 0.3.0 (2017-09-29)</p>
+<p>Version 0.4.0 (2018-01-09)</p>
 </div>
 </body>
 </html>
