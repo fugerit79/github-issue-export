@@ -12,10 +12,10 @@ From base dir :
 mvn clean install -P singlepackage
 
 ### Run with a simple gui
-java -jar target/dist-github-issue-export-0.2.0-SNAPSHOT.jar
+java -jar target/dist-github-issue-export-0.4.0-SNAPSHOT.jar
 
 ### Run on command line
-java -jar target/dist-github-issue-export-0.2.0-SNAPSHOT.jar --gui 0 --owner fugerit79 --repo github-issue-export --lang it --xls-file target/report.xls
+java -jar target/dist-github-issue-export-0.4.0-SNAPSHOT.jar --gui 0 --owner fugerit79 --repo github-issue-export --lang it --xls-file target/report.xls
 
 
 ## CHANGELOG
