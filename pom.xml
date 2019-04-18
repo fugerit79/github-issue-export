@@ -5,7 +5,7 @@
 	<groupId>org.fugerit.java</groupId>
 	<artifactId>github-issue-export</artifactId>
 
-	<version>0.4.0</version>
+	<version>0.5.0</version>
 	<packaging>jar</packaging>
 
 	<name>github-issue-export</name>
@@ -20,6 +20,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
 
 	<licenses>
