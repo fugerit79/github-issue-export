@@ -10,8 +10,9 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -237,9 +238,6 @@ public class GithubIssueExport {
 		String githubUser = info.getProperty( ARG_GITHUB_USER );
 		String githubPass = info.getProperty( ARG_GITHUB_PASS );
 		logger.info( "connecting to url : "+url+" (user:"+githubUser+")" );
-		if ( StringUtils.isNotEmpty( githubUser ) && StringUtils.isNotEmpty( githubPass ) ) {
-			url = url.replace( "api.github.com" , githubUser+":"+URLEncoder.encode( githubPass, "UTF-8" )+"@api.github.com" );
-		}
 		HttpURLConnection conn;
 		if ( !StringUtils.isEmpty( proxyHost ) && !StringUtils.isEmpty( proxyPort ) ) {
 			logger.debug( "using proxy : "+proxyHost+":"+proxyPort+" (user:"+proxyUser+")" );
@@ -257,6 +255,11 @@ public class GithubIssueExport {
 		} else {
 			URL u = new URL( url );
 			conn = (HttpURLConnection)u.openConnection();
+			if ( StringUtils.isNotEmpty( githubUser ) && StringUtils.isNotEmpty( githubPass ) ) {
+				String encoded = Base64.getEncoder().encodeToString((githubUser+":"+githubPass).getBytes(StandardCharsets.UTF_8));
+				logger.info( "Set authentication : "+encoded );
+				conn.setRequestProperty("Authorization", "Basic "+encoded);
+			}
 		}
 		StringBuffer buffer = new StringBuffer();
 		if ( conn.getResponseCode() != 200 ) {
