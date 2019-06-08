@@ -1,3 +1,9 @@
+Release NEXT []
+- Fixed some issues with dependancies versions
+
+Release 0.5.1 [2019-06-08]
+- Repository authentication implemeneted (api limits are higher this way)
+
 Release 0.4.0 [2018-01-12]
 - Added support for assign date cache
 
