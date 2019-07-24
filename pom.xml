@@ -22,6 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
+		<fasterxml-jackson-core-version>2.9.9</fasterxml-jackson-core-version>
+		<fasterxml-jackson-databind-version>2.9.9.1</fasterxml-jackson-databind-version>
 	</properties>
 
 	<licenses>
@@ -117,14 +119,13 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.9.9</version>
+			<version>${fasterxml-jackson-core-version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.9</version>
+			<version>${fasterxml-jackson-databind-version}</version>
 		</dependency>
 
 		<!-- for testing -->
