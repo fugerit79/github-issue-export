@@ -5,7 +5,7 @@ Simple propject to export github issues to a xls spreadsheet.
 ## Quickstart
 
 ### Clone (use master or develop branch for latest snapshot, release/x.x.x branch for stable versions)
-git clone https://github.com/fugerit79/github-issue-export.git
+git clone https://github.com/fugerit-org/github-issue-export.git
 
 ### Build
 From base dir : 
