@@ -15,7 +15,7 @@ mvn clean install -P singlepackage
 java -jar target/dist-github-issue-export-X.X.X.jar
 
 ### Run on command line
-java -jar target/dist-github-issue-export-X.X.X.jar --gui 0 --owner fugerit79 --repo github-issue-export --lang it --xls-file target/report.xls
+java -jar target/dist-github-issue-export-X.X.X.jar --gui 0 --owner fugerit-org --repo github-issue-export --lang it --xls-file target/report.xls
 
 
 ## CHANGELOG
