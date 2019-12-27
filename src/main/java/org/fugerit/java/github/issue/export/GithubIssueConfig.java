@@ -6,8 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GithubIssueConfig {
 
+	private static final Logger logger = LoggerFactory.getLogger( GithubIssueConfig.class );
+	
 	public static final String CONFIG_FOLDER = ".github-issue-export";
 	
 	public static final String MAIN_CONFIG_FILE = "saved-config.properties";
@@ -31,7 +36,11 @@ public class GithubIssueConfig {
 	
 	public File getCacheFileForRepo( String owner, String repo ) {
 		String baseName = "cache-"+owner+"-"+repo+".properties";
-		return new File( getBaseConfigPath(), baseName );
+		File file = new File( getBaseConfigPath(), baseName );
+		if ( !file.getParentFile().exists() ) {
+			logger.info( "create config dir : "+file.getAbsolutePath()+" -> "+file.getParentFile().mkdirs() );
+		}
+		return file;
 	}
 	
 	public Properties loadCachePropForRepo( String owner, String repo ) throws IOException {
