@@ -13,9 +13,9 @@
 	<url>http://www.fugerit.org/java/</url>
 
 	<scm>
-		<connection>scm:git:git://github.com/fugerit79/github-issue-export.git</connection>
-		<developerConnection>scm:git:ssh://github.com/fugerit79/github-issue-export.git</developerConnection>
-		<url>http://github.com/fugerit79/github-issue-export/tree/master</url>
+		<connection>scm:git:git://github.com/fugerit-org/github-issue-export.git</connection>
+		<developerConnection>scm:git:ssh://github.com/fugerit-org/github-issue-export.git</developerConnection>
+		<url>http://github.com/fugerit-org/github-issue-export/tree/master</url>
 	</scm>
 
 	<properties>
